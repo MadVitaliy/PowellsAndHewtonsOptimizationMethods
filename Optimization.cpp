@@ -83,6 +83,10 @@ namespace Optimization
     return min;
     }
 
+  /*
+   * TODO:i_bb is used only for one dimensional optimization and it is a bottle neck of the realisation
+   * it will be great to find the limits for the optimization algorithmically
+   */
   point PowellsOptimization(const std::function<double(const point&)>& i_fun, const point& i_p0, const bbox& i_bb,
                             double i_epsilon, bool i_print)
     {
