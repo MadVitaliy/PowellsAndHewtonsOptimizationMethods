@@ -120,7 +120,7 @@ std::ostream& operator<<(std::ostream& os, const sqmatrix& m);
 
 [[nodiscard]] sqmatrix operator-(const sqmatrix& m1, const sqmatrix& m2) noexcept;
 
-[[nodiscard]] sqmatrix invert(const sqmatrix& m);
+[[nodiscard]] sqmatrix Invert(const sqmatrix& m);
 
 //
 [[nodiscard]] bool

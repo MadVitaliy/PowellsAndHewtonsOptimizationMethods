@@ -18,19 +18,23 @@ double MinimizeMe(const point& i_point)
   //return 4*i_point[0]*i_point[0] + 3*i_point[1]*i_point[1] - 4 * i_point[0]*i_point[1] - 2 * i_point[0];
   }
 
+double MinimizeMeByNewton(const point& i_p)
+  {
+  return i_p[0] * i_p[0] + i_p[0] * i_p[1] + 3 * i_p[1] * i_p[1] - 12 * i_p[0] - 15 * i_p[1] + 2;
+  }
+
+
 int main()
   {
   Tests::RunTests();
+
 //  const auto result = Optimization::PowellsOptimization(MinimizeMe, {0.5, 0.5}, {{0.4, 0.4},
 //                                                                                 {2.,  2.}}, 0.0001, true);
 
-  const auto result1 = Optimization::PowellsOptimization(MinimizeMe, {0.5, 0.5}, {{0.4, 0.4},
-                                                                                 {2.,  2.}}, 0.0001, true);
 
-  const auto result2 = Optimization::NewtonsOptimization(MinimizeMe, {0.5, 0.5}, 0.0001, true);
+  std::cout << "Newton1" << std::endl;
+  Optimization::NewtonsOptimization(MinimizeMeByNewton, {0.5, 0.5}, 0.0001, true);
 
-  std::cout << result1 <<std::endl;
-  std::cout << result2 <<std::endl;
   return 0;
   }
 
@@ -127,7 +131,7 @@ namespace Tests
     std::cout << "TestInvert:" << std::endl;
     {
       const sqmatrix m{1., 0., 0., 1.};
-      const auto inv_m = invert(m);
+      const auto inv_m = Invert(m);
       const auto ok = IsEqual(m, inv_m);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
       if (!ok)
@@ -135,7 +139,7 @@ namespace Tests
     }
 
     {
-      const auto inv_m = invert({1., 2., 3., 4.});
+      const auto inv_m = Invert({1., 2., 3., 4.});
       const sqmatrix golden_inv{-2., 1., 1.5, -0.5};
       const auto ok = IsEqual(inv_m, golden_inv);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
@@ -188,7 +192,7 @@ namespace Tests
                                                  {
                                                  return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] - 2 * i_p[1] +
                                                         2;
-                                                 }, {0.9999999918566028, 0.8164965848727971},0.0001);
+                                                 }, {0.9999999918566028, 0.8164965848727971}, 0.0001);
       const point golden_frad{0., 0.};
       const auto ok = IsEqual(grad, golden_frad, 0.000001);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
@@ -202,15 +206,16 @@ namespace Tests
     std::cout << "TestHessian:" << std::endl;
     {
       const auto hessian = Optimization::Hessian([](const point& p)
-                                                 {
-                                                 return p[0] * p[0] + p[0] * p[1] + 3 * p[1] * p[1] - 12 * p[0] -
-                                                        15 * p[1] + 2;
-                                                 }, {0., 0.});
-      const sqmatrix golden_hessian{2., 1.,1.,6.};
+                                                   {
+                                                   return p[0] * p[0] + p[0] * p[1] + 3 * p[1] * p[1] - 12 * p[0] -
+                                                          15 * p[1] + 2;
+                                                   }, {0., 0.});
+      const sqmatrix golden_hessian{2., 1., 1., 6.};
       const auto ok = IsEqual(hessian, golden_hessian, 0.0000001);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
       if (!ok)
-        std::cout << "Expected:\n" << std::fixed << std::setprecision(10)<< golden_hessian << "real:\n" << hessian << std::endl;
+        std::cout << "Expected:\n" << std::fixed << std::setprecision(10) << golden_hessian << "real:\n" << hessian
+                  << std::endl;
     }
     {
       const auto hessian = Optimization::Hessian([](const point& p)
@@ -218,35 +223,70 @@ namespace Tests
                                                    return p[0] * p[0] + p[0] * p[1] + 3 * p[1] * p[1] - 12 * p[0] -
                                                           15 * p[1] + 2;
                                                    }, {-1., -1.});
-      const sqmatrix golden_hessian{2., 1.,1.,6.};
+      const sqmatrix golden_hessian{2., 1., 1., 6.};
       const auto ok = IsEqual(hessian, golden_hessian, 0.0000001);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
       if (!ok)
-        std::cout << "Expected:\n" << std::fixed << std::setprecision(10)<< golden_hessian << "real:\n" << hessian << std::endl;
+        std::cout << "Expected:\n" << std::fixed << std::setprecision(10) << golden_hessian << "real:\n" << hessian
+                  << std::endl;
     }
     {
       const auto hessian = Optimization::Hessian([](const point& i_p)
                                                    {
-                                                   return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] - 2 * i_p[1] +
-                                                          2;
+                                                   return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] -
+                                                          2 * i_p[1] + 2;
                                                    }, {-1., -1.});
-      const sqmatrix golden_hessian{-6., 0.,0.,-6.};
+      const sqmatrix golden_hessian{-6., 0., 0., -6.};
       const auto ok = IsEqual(hessian, golden_hessian, 0.0000001);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
       if (!ok)
-        std::cout << "Expected:\n" << std::fixed << std::setprecision(10)<< golden_hessian << "real:\n" << hessian << std::endl;
+        std::cout << "Expected:\n" << std::fixed << std::setprecision(10) << golden_hessian << "real:\n" << hessian
+                  << std::endl;
     }
     {
       const auto hessian = Optimization::Hessian([](const point& i_p)
                                                    {
-                                                   return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] - 2 * i_p[1] +
-                                                          2;
+                                                   return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] -
+                                                          2 * i_p[1] + 2;
                                                    }, {0.9999999918566028, 0.8164965848727971});
-      const sqmatrix golden_hessian{5.999999951139617, 0.,0.,4.898979509236782};
+      const sqmatrix golden_hessian{5.999999951139617, 0., 0., 4.898979509236782};
       const auto ok = IsEqual(hessian, golden_hessian, 0.0000001);
       std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
       if (!ok)
-        std::cout << "Expected:\n" << std::fixed << std::setprecision(10)<< golden_hessian << "real:\n" << hessian << std::endl;
+        std::cout << "Expected:\n" << std::fixed << std::setprecision(10) << golden_hessian << "real:\n" << hessian
+                  << std::endl;
+    }
+    }
+
+
+  void TestNewtonsMethod()
+    {
+    std::cout << "TestNewtonsMethod:" << std::endl;
+    {
+      constexpr auto precision = 0.0001;
+      const auto opt = Optimization::NewtonsOptimization([](const point& i_p)
+                                                           {
+                                                           return pow(i_p[0], 3.0) + pow(i_p[1], 3.0) - 3 * i_p[0] -
+                                                                  2 * i_p[1] + 2;
+                                                           }, {0.2, 0.2}, precision, false);
+      const point golden_opt{0.9999999918566028, 0.8164965848727971};
+      const auto ok = IsEqual(opt, golden_opt, precision);
+      std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
+      if (!ok)
+        std::cout << "Expected: {" << golden_opt << "}, found: {" << opt << "}" << std::endl;
+    }
+    {
+      constexpr auto precision = 0.0001;
+      const auto opt = Optimization::NewtonsOptimization([](const point& p)
+                                                           {
+                                                           return p[0] * p[0] + p[0] * p[1] + 3 * p[1] * p[1] -
+                                                                  12 * p[0] - 15 * p[1] + 2;
+                                                           }, {0.0, 0.0}, precision, false);
+      const point golden_opt{5.181818207077867, 1.6363636597928};
+      const auto ok = IsEqual(opt, golden_opt, precision);
+      std::cout << (ok ? "\tok" : "\t ne ok") << std::endl;
+      if (!ok)
+        std::cout << "Expected: {" << golden_opt << "}, found: {" << opt << "}" << std::endl;
     }
     }
 
@@ -258,6 +298,7 @@ namespace Tests
     TestInvert();
     TestGradient();
     TestHessian();
+    TestNewtonsMethod();
     }
 
   }

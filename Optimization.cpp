@@ -6,8 +6,6 @@
 
 #include "point.h"
 #include <iostream>
-#include <iomanip>
-#include <cmath>
 
 namespace Optimization
   {
@@ -21,7 +19,7 @@ namespace Optimization
     const auto fpx2 = i_fun({i_p[0], i_p[1] + i_d});
     const auto fmx2 = i_fun({i_p[0], i_p[1] - i_d});
 
-    return {(fpx1-fmx1) / (2*i_d), (fpx2-fmx2) / (2*i_d)};
+    return {(fpx1 - fmx1) / (2 * i_d), (fpx2 - fmx2) / (2 * i_d)};
     }
 
 
@@ -40,9 +38,9 @@ namespace Optimization
     const auto fmdxmdy = i_fun({x - i_d, y - i_d});
 
     sqmatrix result;
-    result[0] = ((fp2dx-fxy)/(2*i_d)-(fxy-fm2dx)/(2*i_d))/(2*i_d);
-    result[3] = ((fp2dy-fxy)/(2*i_d)-(fxy-fm2dy)/(2*i_d))/(2*i_d);
-    result[1] = result[2] = ((fpdxpdy-fmdxpdy)/(2*i_d)-(fpdxmdy-fmdxmdy)/(2*i_d))/(2*i_d);
+    result[0] = ((fp2dx - fxy) / (2 * i_d) - (fxy - fm2dx) / (2 * i_d)) / (2 * i_d);
+    result[3] = ((fp2dy - fxy) / (2 * i_d) - (fxy - fm2dy) / (2 * i_d)) / (2 * i_d);
+    result[1] = result[2] = ((fpdxpdy - fmdxpdy) / (2 * i_d) - (fpdxmdy - fmdxmdy) / (2 * i_d)) / (2 * i_d);
     return result;
     }
 
@@ -94,9 +92,7 @@ namespace Optimization
     point prev, curr = i_p0;
     point prev_grad, curr_grad, curr_dirr;
     std::size_t success_counter = 0;
-    bool stop = false;
 
-    //here will be loop
     curr_grad = Gradient(i_fun, curr);
     curr_dirr = A * curr_grad * (-1.);
     prev_grad = curr_grad;
@@ -168,9 +164,8 @@ namespace Optimization
 
 
     if (i_print)
-      {
       std::cout << "f(opt)=f(" << curr << ") = " << i_fun(curr) << std::endl;
-      }
+
 
     return curr;
     }
@@ -198,17 +193,19 @@ namespace Optimization
       {
       if (k >= M)
         break;
+      if (i_print)
+        std::cout << "f(curr)=f(" << curr << ") = " << i_fun(curr) << std::endl;
+      prev = curr;
+      curr = curr - Invert(Hessian(i_fun, curr)) * Gradient(i_fun, curr);
 
-      curr = curr - Hessian(i_fun,curr)* Gradient(i_fun,curr);
 
       ++k;
-      } while (Length(curr - prev) < i_epsilon && std::abs(i_fun(curr) - i_fun(prev)) < i_epsilon);
+      } while (Length(curr - prev) > i_epsilon || std::abs(i_fun(curr) - i_fun(prev)) > i_epsilon);
 
 
     if (i_print)
-      {
       std::cout << "f(opt)=f(" << curr << ") = " << i_fun(curr) << std::endl;
-      }
+
 
     return curr;
     }
