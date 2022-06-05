@@ -4,14 +4,6 @@
 
 #ifndef POWELLSMETHOD_POINT_H
 #define POWELLSMETHOD_POINT_H
-//
-//template<typename type, std::size_t dim>
-//struct point{
-//  static constexpr std::size_t dimension = dim;
-//  using value_type = type;
-//  constexpr point() noexcept;
-//  constexpr point(const point&) = default
-//};
 
 #include <cstddef>
 #include <limits>

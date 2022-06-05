@@ -28,8 +28,8 @@ int main()
   {
   Tests::RunTests();
 
-//  const auto result = Optimization::PowellsOptimization(MinimizeMe, {0.5, 0.5}, {{0.4, 0.4},
-//                                                                                 {2.,  2.}}, 0.0001, true);
+  const auto result = Optimization::PowellsOptimization(MinimizeMe, {0.41, 0.41}, {{0.4, 0.4},
+                                                                                 {2.,  2.}}, 0.0001, true);
 
 
   std::cout << "Newton1" << std::endl;
