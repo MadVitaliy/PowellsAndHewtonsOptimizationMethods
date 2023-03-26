@@ -2,6 +2,7 @@
 // Created by Vitaliy on 01.06.2022.
 //
 #include "PowellsMethod.Math/Optimization.h"
+#include "PowellsMethod.Math/point.h"
 
 #include <iostream>
 
@@ -137,7 +138,7 @@ namespace Optimization
       const sqmatrix left = ColumnOnRow(d_p, d_p) / (d_p * d_grad);
       const sqmatrix right = ColumnOnRow((A * d_grad), (d_grad * A)) / ((d_grad * A) * d_grad);
       //9
-      A += left - right;
+      A += (left - right);
       //10
       curr_dirr = A * curr_grad * (-1.);
       //11-12

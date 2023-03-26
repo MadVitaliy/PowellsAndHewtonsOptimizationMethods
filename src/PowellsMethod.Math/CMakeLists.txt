@@ -17,3 +17,5 @@ target_include_directories(${TargetName}
         PUBLIC
         include
         )
+
+add_subdirectory(tests)
