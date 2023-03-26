@@ -1,5 +1,5 @@
-#include "point.h"
-#include "Optimization.h"
+#include "PowellsMethod.Math/point.h"
+#include "PowellsMethod.Math/Optimization.h"
 
 #include <iostream>
 #include <iomanip>

@@ -1,8 +1,8 @@
 //
 // Created by Vitaliy on 30.05.2022.
 //
+#include "PowellsMethod.Math/point.h"
 
-#include "point.h"
 #include <cmath>
 #include <vector>
 #include <cassert>

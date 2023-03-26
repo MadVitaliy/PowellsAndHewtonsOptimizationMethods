@@ -1,10 +1,8 @@
 //
 // Created by Vitaliy on 01.06.2022.
 //
+#include "PowellsMethod.Math/Optimization.h"
 
-#include "Optimization.h"
-
-#include "point.h"
 #include <iostream>
 
 namespace Optimization
