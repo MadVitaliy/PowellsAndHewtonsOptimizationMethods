@@ -8,12 +8,11 @@
 #include "PowellsMethod.Math/PowellsMethod.Math.API.h"
 
 
-#include "PowellsMethod.Math/point.h"
 #include <functional>
 
-//struct point;
-//struct sqmatrix;
-//struct bbox;
+struct point;
+struct sqmatrix;
+struct bbox;
 
 namespace Optimization
   {
