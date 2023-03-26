@@ -1,0 +1,2 @@
+add_subdirectory(PowellsMethod)
+add_subdirectory(PowellsMethod.Math)
